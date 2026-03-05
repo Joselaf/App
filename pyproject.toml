@@ -1,5 +1,5 @@
 [project]
-name = "Alarmes"
+name = "app"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -9,6 +9,7 @@ authors = [
 ]
 dependencies = [
     "flet>=0.82.0",
+    "paho-mqtt>=2.1.0",
     "tinytuya>=1.17.6",
 ]
 
@@ -24,7 +25,6 @@ org = "com.mycompany"
 product = "app"
 company = "Flet"
 copyright = "Copyright (C) 2023-2026 by Flet"
-dependencies = ["flet", "tinytuya"]
 
 [tool.flet.app]
 path = "src"
