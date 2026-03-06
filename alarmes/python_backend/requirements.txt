@@ -1,0 +1,4 @@
+tinytuya
+paho-mqtt
+flask
+flask-cors
