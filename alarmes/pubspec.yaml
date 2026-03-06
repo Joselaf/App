@@ -43,6 +43,9 @@ dependencies:
   
   # For state management
   provider: ^6.1.1
+  
+  # MQTT client for push notifications
+  mqtt_client: ^10.0.0
 
 dev_dependencies:
   flutter_test:

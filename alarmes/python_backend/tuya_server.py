@@ -38,11 +38,21 @@ active_alerts = {}
 device_names  = {}
 last_update   = "Iniciando..."
 mqtt_connected = False
+mqtt_config = {}
+mqtt_client = None  # Store MQTT config for API
 
 app = Flask(__name__)
 CORS(app)
 
-def check_alerts(device_id, dps):
+def publish_alerts():
+    global mqtt_client, active_alerts, last_update
+    if mqtt_client and mqtt_connected:
+        payload = json.dumps({
+            "alerts": list(active_alerts.values()),
+            "last_update": last_update
+        })
+        mqtt_client.publish(f"tuya/alerts/{API_KEY}", payload, qos=1)
+        print(f"Published alerts: {len(active_alerts)} alerts")
     alerts = []
     name = device_names.get(device_id, device_id)
     
@@ -91,19 +101,30 @@ def on_mqtt_message(client, userdata, msg):
             active_alerts.pop(device_id, None)
         
         last_update = time.strftime('%H:%M:%S')
+        publish_alerts()
     except Exception as e:
         print(f"Error processing message: {e}")
 
 def connect_mqtt(access_token):
-    global mqtt_connected
+    global mqtt_connected, mqtt_config, mqtt_client
     client_id = f"tuyapy_{API_KEY}"
     username   = access_token
     password   = ""
     
-    client = mqtt.Client(client_id=client_id, protocol=mqtt.MQTTv311)
-    client.username_pw_set(username, password)
-    client.tls_set()
-    client.on_message = on_mqtt_message
+    # Store config for API
+    mqtt_config = {
+        "host": MQTT_HOSTS.get(API_REGION, "m1.tuyaeu.com"),
+        "port": 8883,
+        "client_id": client_id,
+        "username": username,
+        "password": password,
+        "api_key": API_KEY
+    }
+    
+    mqtt_client = mqtt.Client(client_id=client_id, protocol=mqtt.MQTTv311)
+    mqtt_client.username_pw_set(username, password)
+    mqtt_client.tls_set()
+    mqtt_client.on_message = on_mqtt_message
     
     def on_connect(client, userdata, flags, rc):
         global mqtt_connected
@@ -111,14 +132,14 @@ def connect_mqtt(access_token):
         if mqtt_connected:
             print("MQTT Connected")
     
-    client.on_connect = on_connect
+    mqtt_client.on_connect = on_connect
     
-    host = MQTT_HOSTS.get(API_REGION, "m1.tuyaeu.com")
-    client.connect(host, 8883, keepalive=60)
+    host = mqtt_config["host"]
+    mqtt_client.connect(host, 8883, keepalive=60)
     
     topic = f"tygateway/{API_KEY}/#"
-    client.subscribe(topic)
-    client.loop_forever()
+    mqtt_client.subscribe(topic)
+    mqtt_client.loop_forever()
 
 def start_cloud():
     global last_update
@@ -163,6 +184,7 @@ def start_cloud():
                 print(f"Error loading status for {dev['id']}: {e}")
         
         last_update = time.strftime('%H:%M:%S')
+        publish_alerts()
         
         # Try to get MQTT credentials - use token if method doesn't exist
         try:
@@ -189,6 +211,10 @@ def start_cloud():
             "device_name": "Erro",
             "alerts": [f"Erro: {str(e)}"]
         }
+
+@app.route('/api/mqtt_config', methods=['GET'])
+def get_mqtt_config():
+    return jsonify(mqtt_config)
 
 @app.route('/api/alerts', methods=['GET'])
 def get_alerts():
