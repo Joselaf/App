@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616877171889",
+    "project_id": "alarmes-7adaa",
+    "storage_bucket": "alarmes-7adaa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616877171889:android:ac3c28e284cbecea4a2e90",
+        "android_client_info": {
+          "package_name": "com.example.alarmes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD71KcuAjAu0J5XPaLfbdKcztkEjQ0Lru4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
