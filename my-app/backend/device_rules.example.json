@@ -1,0 +1,31 @@
+{
+  "battery": {
+    "percentage_threshold": 20,
+    "dead_percentage_threshold": 5,
+    "code_candidates": [
+      "battery_percentage",
+      "battery",
+      "va_battery",
+      "residual_electricity",
+      "battery_value"
+    ],
+    "state_candidates": [
+      "battery_state",
+      "battery_status"
+    ],
+    "low_values": ["low", "warning"],
+    "dead_values": ["dead", "critical", "empty"]
+  },
+  "breaker": {
+    "code_candidates": ["trip", "breaker", "relay_status", "alarm_state"],
+    "tripped_values": ["trip", "tripped", "open", false, 1]
+  },
+  "panic": {
+    "code_candidates": ["sos", "panic", "emergency_alarm"],
+    "active_values": [true, "1", 1, "on", "alarm"]
+  },
+  "fire": {
+    "code_candidates": ["smoke_sensor_state", "smoke_alarm", "fire_alarm", "smoke_state"],
+    "active_values": [true, "1", 1, "alarm", "detected", "warning"]
+  }
+}
