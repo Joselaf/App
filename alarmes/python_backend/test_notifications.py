@@ -18,7 +18,7 @@ def send_test_notification():
                 title="🧪 Test Notification",
                 body="Push notifications are working!",
             ),
-            topic="test_notifications",  # Send to test topic
+            topic="device_alerts",  # Send to app alerts topic
         )
 
         # Send message

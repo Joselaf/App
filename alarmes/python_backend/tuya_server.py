@@ -39,7 +39,7 @@ MQTT_HOSTS = {
 active_alerts = {}
 device_names  = {}
 last_update   = "Iniciando..."
-device_tokens = set()  # Store FCM device tokens
+FCM_ALERTS_TOPIC = "device_alerts"
 
 app = Flask(__name__)
 CORS(app)
@@ -68,35 +68,37 @@ def publish_alerts():
 
     try:
         ref = db.reference('alerts')
-        # Always send an object with timestamp, never empty dict (Firebase treats {} as null)
+        # Always include a fresh timestamp so clients can update "last fetch".
+        payload = {"_timestamp": time.strftime('%H:%M:%S')}
+
         if active_alerts:
-            ref.set(active_alerts)
+            payload.update(active_alerts)
         else:
-            # Send a special marker when no alerts
-            ref.set({"_timestamp": time.strftime('%H:%M:%S'), "_no_alerts": True})
+            # Keep explicit marker when no alerts are active.
+            payload["_no_alerts"] = True
+
+        ref.set(payload)
         print(f"📤 Published {len(active_alerts)} alerts to Firebase")
     except Exception as e:
         print(f"❌ Error publishing to Firebase: {e}")
 
 def send_push_notifications(title, body):
-    """Send push notifications to all registered devices"""
-    if not device_tokens:
-        print("No device tokens registered for push notifications")
+    """Send push notifications to all devices subscribed to the alerts topic."""
+    if not firebase_initialized:
+        print("Firebase not initialized - skipping push notification")
         return
 
-    message = messaging.MulticastMessage(
+    message = messaging.Message(
         notification=messaging.Notification(
             title=title,
             body=body,
         ),
-        tokens=list(device_tokens),
+        topic=FCM_ALERTS_TOPIC,
     )
 
     try:
-        response = messaging.send_multicast(message)
-        print(f"Sent push notifications: {response.success_count} successful, {response.failure_count} failed")
-        if response.failure_count > 0:
-            print("Failures:", response.responses)
+        response = messaging.send(message)
+        print(f"Sent push notification to topic '{FCM_ALERTS_TOPIC}': {response}")
     except Exception as e:
         print(f"Error sending push notifications: {e}")
 
@@ -128,65 +130,66 @@ def check_alerts(device_id, dps):
 
 def start_cloud():
     global last_update
-    try:
-        print("🔗 Connecting to Tuya Cloud...")
-        cloud = tinytuya.Cloud(
-            apiRegion=API_REGION,
-            apiKey=API_KEY,
-            apiSecret=API_SECRET,
-        )
+    reconnect_delay_seconds = 10
+    poll_interval_seconds = 5
+    attempt = 0
 
-        # Test authentication
-        print("🔑 Testing Tuya authentication...")
-        token = cloud.token
-        if not token:
-            raise Exception("No authentication token received - check API credentials")
+    while True:
+        try:
+            attempt += 1
+            print(f"🔗 Connecting to Tuya Cloud... (attempt {attempt})")
+            cloud = tinytuya.Cloud(
+                apiRegion=API_REGION,
+                apiKey=API_KEY,
+                apiSecret=API_SECRET,
+            )
 
-        print("📋 Getting device list...")
-        devices = cloud.getdevices()
-        print(f"✅ Found {len(devices)} devices")
+            # Test authentication
+            print("🔑 Testing Tuya authentication...")
+            token = cloud.token
+            if not token:
+                raise Exception("No authentication token received - check API credentials")
 
-        if not devices:
-            print("⚠️ No devices found in Tuya Cloud")
-            print("Make sure devices are added to your Tuya Cloud project")
-            return
+            print("📋 Getting device list...")
+            devices = cloud.getdevices()
+            print(f"✅ Found {len(devices)} devices")
 
-        # Store device names
-        for device in devices:
-            device_names[device['id']] = device.get('name', device['id'])
-            print(f"📱 Device: {device['name']} ({device['id']})")
+            if not devices:
+                raise Exception("No devices found in Tuya Cloud")
 
-        # Publish empty alerts to Firebase immediately so app can connect
-        publish_alerts()
-        global last_update
-        last_update = time.strftime('%H:%M:%S')
+            # Store device names
+            for device in devices:
+                device_names[device['id']] = device.get('name', device['id'])
+                print(f"📱 Device: {device['name']} ({device['id']})")
 
-        # Initial status check
-        print("🔍 Performing initial device status check...")
-        update_device_status(cloud, devices)
+            # Publish current state to Firebase immediately so app can connect
+            publish_alerts()
+            last_update = time.strftime('%H:%M:%S')
 
-        # Poll devices for status
-        print("🔄 Starting device polling every 30 seconds...")
-        poll_count = 0
-        while True:
-            poll_count += 1
-            print(f"\n📊 Poll #{poll_count} - {time.strftime('%H:%M:%S')}")
-            try:
+            # Initial status check
+            print("🔍 Performing initial device status check...")
+            update_device_status(cloud, devices)
+
+            # Poll devices for status
+            print(f"🔄 Starting device polling every {poll_interval_seconds} seconds...")
+            poll_count = 0
+            while True:
+                poll_count += 1
+                print(f"\n📊 Poll #{poll_count} - {time.strftime('%H:%M:%S')}")
                 update_device_status(cloud, devices)
-            except Exception as e:
-                print(f"❌ Error in polling cycle: {e}")
+                time.sleep(poll_interval_seconds)
 
-            time.sleep(5)  # Poll every 30 seconds
-
-    except Exception as e:
-        error_msg = f"Tuya Cloud connection failed: {str(e)}"
-        print(f"❌ {error_msg}")
-        active_alerts["__error__"] = {
-            "device_id": "__error__",
-            "device_name": "Erro de Conexão",
-            "alerts": [error_msg]
-        }
-        publish_alerts()
+        except Exception as e:
+            error_msg = f"Tuya Cloud connection/polling failed: {str(e)}"
+            print(f"❌ {error_msg}")
+            active_alerts["__error__"] = {
+                "device_id": "__error__",
+                "device_name": "Erro de Conexão",
+                "alerts": [error_msg]
+            }
+            publish_alerts()
+            print(f"⏳ Retrying Tuya Cloud connection in {reconnect_delay_seconds} seconds...")
+            time.sleep(reconnect_delay_seconds)
 
 def update_device_status(cloud, devices):
     """Poll all devices for their current status"""
@@ -212,10 +215,18 @@ def update_device_status(cloud, devices):
             had_alerts_before = device_id in active_alerts
 
             if alerts:
+                captured_at = time.strftime('%H:%M:%S')
+                if had_alerts_before:
+                    previous_alert = active_alerts.get(device_id, {})
+                    previous_captured_at = previous_alert.get('captured_at')
+                    if previous_captured_at:
+                        captured_at = previous_captured_at
+
                 active_alerts[device_id] = {
                     "device_id": device_id,
                     "device_name": device_name,
-                    "alerts": alerts
+                    "alerts": alerts,
+                    "captured_at": captured_at,
                 }
                 if not had_alerts_before:
                     print(f"🚨 NEW ALERT: {device_name} - {alerts[0]}")

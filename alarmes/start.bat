@@ -17,9 +17,9 @@ pip install -r requirements.txt >nul 2>&1
 echo Backend dependencies installed.
 echo.
 
-REM Start backend server in background
-echo Starting backend server...
-start "Backend Server" cmd /k "python tuya_server.py"
+REM Start backend watchdog in background (auto-restarts backend on crashes)
+echo Starting backend watchdog...
+start "Backend Watchdog" cmd /k "python run_backend_forever.py"
 timeout /t 3 /nobreak >nul
 
 REM Start Flutter app

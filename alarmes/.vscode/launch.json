@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter Stable Android (no DDS, no Impeller)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "deviceId": "R5CW22DHCMA",
+      "toolArgs": [
+        "--disable-dds",
+        "--no-enable-impeller"
+      ]
+    },
+    {
+      "name": "Flutter Android (current defaults)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "deviceId": "R5CW22DHCMA"
+    }
+  ]
+}
