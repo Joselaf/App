@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.joselaf.alerts"
     },
     "web": {
       "output": "static",
@@ -27,6 +28,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
@@ -45,6 +47,7 @@
       "reactCompiler": true
     },
     "extra": {
+      "apiBaseUrl": "http://192.168.1.107:8000",
       "router": {},
       "eas": {
         "projectId": "08da1df2-456a-4b70-8141-da28ae1cf907"

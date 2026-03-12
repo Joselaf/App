@@ -1,0 +1,234 @@
+{
+  "subscriptions": {},
+  "recent_alerts": [
+    {
+      "id": "07c7093ba7d84c4ab52dc2c300bc7ac7",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Porta Estufa battery is low.",
+      "timestamp": "2026-03-11T14:57:55.286255+00:00",
+      "deviceId": "bff958f05a8639b1f8mkis",
+      "deviceName": "Porta Estufa",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "2f6f7d950c874119b328f715d9ed35e4",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechadura Q23 battery is low.",
+      "timestamp": "2026-03-11T14:57:54.980673+00:00",
+      "deviceId": "bf51b4c6cf47544c86vxe4",
+      "deviceName": "Fechadura Q23",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "3ad2a3db94324506bdaee08318e947fd",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechadura Q22 battery is low.",
+      "timestamp": "2026-03-11T14:57:43.781057+00:00",
+      "deviceId": "bf38e0728c96b08191ngse",
+      "deviceName": "Fechadura Q22",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "b20eba78440e47fb83dddbc848ed0c56",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q04 battery is low.",
+      "timestamp": "2026-03-11T14:57:43.308701+00:00",
+      "deviceId": "bfad77d73230afaab4zmi9",
+      "deviceName": "Fechaduras Q04",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "4da6b97f743946bbb42721687e2b8347",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q01 battery is low.",
+      "timestamp": "2026-03-11T14:57:43.058594+00:00",
+      "deviceId": "bfa29c6177b6bec67f9mnv",
+      "deviceName": "Fechaduras Q01",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "f4c8dad5bd8d42c2b04616fc89f01d28",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechadura Q11 battery is low.",
+      "timestamp": "2026-03-11T14:57:42.132911+00:00",
+      "deviceId": "bf1655b8790a6a3e35ivlz",
+      "deviceName": "Fechadura Q11",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "492b3e401c52484488af3bf7e7d26031",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q13 battery is low.",
+      "timestamp": "2026-03-11T14:57:41.888581+00:00",
+      "deviceId": "bfd3463d0d1634e933p7nw",
+      "deviceName": "Fechaduras Q13",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "0738559441c743b786ba8c5d1b5c7ba7",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q14 battery is low.",
+      "timestamp": "2026-03-11T14:57:41.653106+00:00",
+      "deviceId": "bfad587724079e3581mvib",
+      "deviceName": "Fechaduras Q14",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "eef59323858a47f8827a241409253fdb",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q26 battery is low.",
+      "timestamp": "2026-03-11T14:57:41.363207+00:00",
+      "deviceId": "bf5f069ba91ec5257egcri",
+      "deviceName": "Fechaduras Q26",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "c0d25b55997b4064a282b624c768de96",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q12 battery is low.",
+      "timestamp": "2026-03-11T14:57:40.812534+00:00",
+      "deviceId": "bf993bf8111cc3111czack",
+      "deviceName": "Fechaduras Q12",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "cff23afde01f4892a1c9d8d7701efcfc",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechadura Q21 battery is low.",
+      "timestamp": "2026-03-11T14:57:40.548749+00:00",
+      "deviceId": "bf45ed69fdca08c91crwq5",
+      "deviceName": "Fechadura Q21",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "61aee504bbca49f18b71b37dabc4e9df",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q02 battery is low.",
+      "timestamp": "2026-03-11T14:57:39.988011+00:00",
+      "deviceId": "bf729df5d47c7c9b67petg",
+      "deviceName": "Fechaduras Q02",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "565c7869d9944ac09c9625cbf7914828",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q03 battery is low.",
+      "timestamp": "2026-03-11T14:57:39.743054+00:00",
+      "deviceId": "bf8f86812988a4cc93og3n",
+      "deviceName": "Fechaduras Q03",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "537a4efaa6c241adae9ca2d52b64f7d9",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras inteligentes 25 battery is low.",
+      "timestamp": "2026-03-11T14:57:39.465753+00:00",
+      "deviceId": "bfa5bccb1e1dfd85b6la1n",
+      "deviceName": "Fechaduras inteligentes 25",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    },
+    {
+      "id": "d3717eb3eec04fdfad776ee17c775eac",
+      "eventType": "low_battery",
+      "severity": "warning",
+      "status": "active",
+      "title": "Low battery",
+      "message": "Fechaduras Q24 battery is low.",
+      "timestamp": "2026-03-11T14:57:38.359796+00:00",
+      "deviceId": "bfc0ad61162890ac4dcj9v",
+      "deviceName": "Fechaduras Q24",
+      "metadata": {
+        "code": "battery_state",
+        "value": "low"
+      }
+    }
+  ],
+  "active_fingerprints": [],
+  "last_sent_by_fingerprint": {},
+  "devices": [],
+  "last_poll_at": "2026-03-12T16:06:21.643628+00:00"
+}

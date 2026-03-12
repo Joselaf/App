@@ -1,0 +1,44 @@
+{
+  "event_rules": [
+    {
+      "enabled": true,
+      "eventType": "low_battery",
+      "severity": "warning",
+      "categories": ["ms", "jtmspro"],
+      "code": "battery_state",
+      "value_in": ["low"],
+      "title": "Low battery",
+      "message": "{device_name} battery is low."
+    },
+    {
+      "enabled": true,
+      "eventType": "low_battery",
+      "severity": "warning",
+      "categories": ["ms", "jtmspro"],
+      "code": "alarm_lock",
+      "value_in": ["low_battery"],
+      "title": "Low battery",
+      "message": "{device_name} battery is low."
+    },
+    {
+      "enabled": true,
+      "eventType": "panic_button",
+      "severity": "critical",
+      "categories": ["ms", "jtmspro"],
+      "code": "hijack",
+      "value_bool": true,
+      "title": "Panic button activated",
+      "message": "{device_name} triggered a hijack/emergency alarm."
+    },
+    {
+      "enabled": true,
+      "eventType": "breaker_tripped",
+      "severity": "critical",
+      "categories": ["dlq"],
+      "code": "fault",
+      "value_gt": 0,
+      "title": "Circuit breaker tripped",
+      "message": "{device_name} reports a breaker fault ({value})."
+    }
+  ]
+}

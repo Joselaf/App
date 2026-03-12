@@ -1,112 +1,168 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import { useAlerts } from '@/components/alerts-provider';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
 
-export default function TabTwoScreen() {
+const categoryLabels: Record<string, string> = {
+  ms: 'Smart Lock',
+  dlq: 'Circuit Breaker',
+  tdq: 'Smart Switch',
+  jtmspro: 'Smart Lock Pro',
+};
+
+const eventLabels: Record<string, string> = {
+  low_battery: 'Low battery',
+  dead_battery: 'Dead battery',
+  breaker_tripped: 'Breaker tripped',
+  fire_alarm: 'Fire alarm',
+  panic_button: 'Panic button',
+};
+
+export default function DevicesScreen() {
+  const { dashboard } = useAlerts();
+  const online = dashboard.devices.filter((d) => d.online).length;
+  const withAlerts = dashboard.devices.filter((d) => d.activeEvents.length > 0).length;
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
+    <ScrollView contentContainerStyle={styles.content}>
+      <ThemedView style={styles.header}>
+        <ThemedText type="title">Devices</ThemedText>
+        <View style={styles.statsRow}>
+          <ThemedView style={styles.stat}>
+            <ThemedText type="subtitle">{dashboard.devices.length}</ThemedText>
+            <ThemedText>total</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.stat}>
+            <ThemedText type="subtitle">{online}</ThemedText>
+            <ThemedText>online</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.stat}>
+            <ThemedText type="subtitle" style={withAlerts > 0 ? styles.alertNumber : undefined}>
+              {withAlerts}
             </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+            <ThemedText>with alerts</ThemedText>
+          </ThemedView>
+        </View>
+      </ThemedView>
+
+      {dashboard.devices.length === 0 ? (
+        <ThemedView style={styles.empty}>
+          <ThemedText>No devices yet — waiting for first poll.</ThemedText>
+        </ThemedView>
+      ) : (
+        dashboard.devices.map((device) => (
+          <ThemedView
+            key={device.id}
+            style={[styles.card, device.activeEvents.length > 0 && styles.cardAlert]}>
+            <View style={styles.cardTop}>
+              <ThemedText type="defaultSemiBold" style={styles.deviceName}>
+                {device.name}
+              </ThemedText>
+              <View style={[styles.dot, device.online ? styles.dotOnline : styles.dotOffline]} />
+            </View>
+            <ThemedText style={styles.category}>
+              {categoryLabels[device.category] ?? device.category}
+            </ThemedText>
+            {typeof device.batteryLevel === 'number' && (
+              <ThemedText>Battery: {device.batteryLevel}%</ThemedText>
+            )}
+            {device.activeEvents.length > 0 && (
+              <View style={styles.eventTags}>
+                {device.activeEvents.map((ev) => (
+                  <View key={ev} style={styles.tag}>
+                    <ThemedText style={styles.tagText}>
+                      {eventLabels[ev] ?? ev}
+                    </ThemedText>
+                  </View>
+                ))}
+              </View>
+            )}
+          </ThemedView>
+        ))
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  content: {
+    padding: 20,
+    gap: 12,
   },
-  titleContainer: {
+  header: {
+    borderRadius: 24,
+    padding: 20,
+    gap: 16,
+    backgroundColor: 'rgba(88,129,87,0.10)',
+    marginBottom: 4,
+  },
+  statsRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 12,
+  },
+  stat: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+  },
+  alertNumber: {
+    color: '#B02A37',
+  },
+  empty: {
+    padding: 20,
+    borderRadius: 18,
+    backgroundColor: 'rgba(148,163,184,0.10)',
+  },
+  card: {
+    borderRadius: 18,
+    padding: 16,
+    gap: 6,
+    backgroundColor: 'rgba(148,163,184,0.10)',
+  },
+  cardAlert: {
+    backgroundColor: 'rgba(176,42,55,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(176,42,55,0.25)',
+  },
+  cardTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  deviceName: {
+    flex: 1,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  dotOnline: {
+    backgroundColor: '#2D6A4F',
+  },
+  dotOffline: {
+    backgroundColor: '#94A3B8',
+  },
+  category: {
+    opacity: 0.6,
+    fontSize: 13,
+  },
+  eventTags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 4,
+  },
+  tag: {
+    backgroundColor: '#B02A37',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+  },
+  tagText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });

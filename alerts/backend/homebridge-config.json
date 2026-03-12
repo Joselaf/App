@@ -1,0 +1,28 @@
+{
+  "bridge": {
+    "name": "Alerts Tuya Local",
+    "username": "CC:22:3D:E3:CE:31",
+    "port": 53826,
+    "pin": "031-45-154"
+  },
+  "accessories": [],
+  "platforms": [
+    {
+      "platform": "config",
+      "name": "Config",
+      "port": 8582,
+      "auth": "none"
+    },
+    {
+      "platform": "@milo526/homebridge-tuya-web.TuyaWebPlatform",
+      "name": "TuyaWebPlatform",
+      "options": {
+        "username": "luis.faria@aup.pt",
+        "password": "TBeMaBrMi_0",
+        "countryCode": "351",
+        "platform": "tuya",
+        "pollingInterval": 60
+      }
+    }
+  ]
+}
